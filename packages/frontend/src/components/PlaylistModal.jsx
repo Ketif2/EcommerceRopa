@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import imageCompression from "browser-image-compression";
 
 const PlaylistModal = ({ playlist, onSave, onClose }) => {
   const [title, setTitle] = useState(playlist.title || "");
@@ -9,12 +10,27 @@ const PlaylistModal = ({ playlist, onSave, onClose }) => {
     onSave({ ...playlist, title, description, cover });
   };
 
-  const handleCoverChange = (e) => {
+  const handleCoverChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setCover(reader.result);
-      reader.readAsDataURL(file);
+      try {
+        // Opciones de compresión
+        const options = {
+          maxSizeMB: 1, 
+          maxWidthOrHeight: 1024, 
+          useWebWorker: true, 
+        };
+  
+        // Comprimir la imagen
+        const compressedFile = await imageCompression(file, options);
+  
+        // Convertir la imagen comprimida a Base64
+        const reader = new FileReader();
+        reader.onload = () => setCover(reader.result);
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error("Error compressing image:", error);
+      }
     }
   };
 

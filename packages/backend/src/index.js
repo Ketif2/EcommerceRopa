@@ -56,6 +56,9 @@ io.on("connection", (socket) => {
     });
   });
 
+  app.use(express.json({ limit: '100000000000000000000000mb' }));
+  app.use(express.urlencoded({ limit: '100000000000000000000000mb', extended: true }));
+
 // --- Rutas de Express ---
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;

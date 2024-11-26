@@ -10,6 +10,7 @@ const Playlists = ({ onPlaySong }) => {
     updatePlaylist,
     removePlaylist,
     loadSongsForPlaylist,
+    updatePlaylistSongs,
   } = usePlaylists();
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
   const [viewPlaylist, setViewPlaylist] = useState(null);
@@ -50,9 +51,14 @@ const Playlists = ({ onPlaySong }) => {
   };
 
   const handleRemoveSong = (songId) => {
-    setPlaylistSongs((prevSongs) =>
-      prevSongs.filter((song) => song.id !== songId)
-    );
+    const updatedSongs = playlistSongs.filter((song) => song.id !== songId);
+  
+    // Usa viewPlaylist en lugar de playlist
+    if (viewPlaylist) {
+      updatePlaylistSongs(viewPlaylist.id, updatedSongs);
+    }
+  
+    setPlaylistSongs(updatedSongs);
   };
 
   const handleSavePlaylist = (updatedPlaylist) => {
@@ -72,6 +78,7 @@ const Playlists = ({ onPlaySong }) => {
         onClose={() => setViewPlaylist(null)}
         onPlaySong={onPlaySong}
         onRemoveSong={handleRemoveSong}
+        updatePlaylistSongs={updatePlaylistSongs}
       />
     );
   }

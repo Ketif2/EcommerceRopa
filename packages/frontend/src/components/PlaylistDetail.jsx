@@ -5,6 +5,8 @@ const PlaylistDetail = ({ playlist, songs, onClose, onPlaySong, onRemoveSong }) 
     return <div className="text-white">The selected playlist was not found.</div>;
   }
 
+  
+
   return (
     <div className="p-4">
       <button
