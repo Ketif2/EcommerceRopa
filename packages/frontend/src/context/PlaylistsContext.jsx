@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import axios from "axios";
-import axios from "axios";
+import { fetchTrendingTracksData } from '../services/data';
 
 const PlaylistsContext = createContext();
 
@@ -28,13 +27,13 @@ export const PlaylistsProvider = ({ children }) => {
 // En PlaylistsContext.jsx o el archivo donde esté definida la función
 const loadSongsForPlaylist = async (playlistId) => {
   try {
-    const response = await axios.get("http://localhost:3000/api/trending");
-    const songs = response.data.map((track) => ({
+    const response = await fetchTrendingTracksData();
+    const songs = response.map((track) => ({
       id: track.id,
       title: track.title,
       artist: track.user.name,
-      artwork: track.artwork["150x150"], 
-      streamUrl: `http://localhost:3000/api/tracks/${track.id}/stream`, 
+      artwork: track.artwork["150x150"],
+      //streamUrl: `http://localhost:3000/api/tracks/${track.id}/stream`,
     }));
     return songs;
   } catch (error) {
