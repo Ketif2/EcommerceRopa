@@ -1,71 +1,55 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const HomePage = () => {
-  const { isAuthenticated, user, logout, loading } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
 
-  console.log("isAuthenticated:", isAuthenticated);
-  console.log("loading:", loading);
-  console.log("user:", user);
-
-  const handleLogout = async () => {
-    await logout();
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p>Cargando...</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <div className="bg-blue-600 text-white p-4">
-        <h1 className="text-center text-xl font-bold">Music Application</h1>
-      </div>
-      <h1 className="text-4xl font-bold">Bienvenido a la aplicación</h1>
-
-      {!isAuthenticated ? (
-        <>
-          <p className="mt-4 text-lg">Por favor, inicia sesión para continuar.</p>
-          <Link
-            to="/login"
-            className="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-800"
-          >
-            Iniciar Sesión
-          </Link>
-        </>
-      ) : (
-        <>
-          <p className="mt-4 text-lg">
-            ¡Hola, <strong>{user.username || 'Usuario'}</strong>! Bienvenido de nuevo.
-          </p>
-          <div className="flex space-x-4 mt-6">
+    <div className="flex flex-col items-center justify-center h-screen bg-secondary text-white">
+      <div className="max-w-lg p-8 rounded-lg bg-primary shadow-xl text-center">
+        <h1 className="text-4xl text-white mb-4 font-fugaz">
+          Bienvenido a Music Vibes
+        </h1>
+        <p className="text-lg text-white mb-6">
+          Descubre tus canciones favoritas, explora comunidades y lleva tu música donde quieras.
+        </p>
+        {!isAuthenticated ? (
+          <div className="flex flex-col gap-4">
             <button
-              onClick={() => navigate("/musicplayer")}
-              className="px-4 py-2 rounded bg-blue-800 text-white"
+              onClick={() => navigate("/login")}
+              className="px-6 py-3 text-lg font-bold text-white bg-contrast2 rounded-lg hover:bg-white hover:text-contrast2 transition"
             >
-              Reproductor
+              Iniciar Sesión
             </button>
             <button
-              onClick={() => navigate("/comunidad")}
-              className="px-4 py-2 rounded bg-blue-800 text-white"
+              onClick={() => navigate("/register")}
+              className="px-6 py-3 text-lg font-bold text-white bg-contrast2 rounded-lg hover:bg-white hover:text-contrast2 transition"
             >
-              Comunidad
+              Regístrate
             </button>
           </div>
-          <button
-            onClick={handleLogout}
-            className="mt-6 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-800"
-          >
-            Cerrar Sesión
-          </button>
-        </>
-      )}
+        ) : (
+          <div className="flex flex-col gap-4">
+            <p className="text-lg text-white mb-4">
+              ¡Hola, <strong>{user?.username || "Usuario"}</strong>! 🎵
+            </p>
+            <button
+              onClick={() => navigate("/musicplayer")}
+              className="px-6 py-3 text-lg font-bold text-white bg-contrast2 rounded-lg hover:bg-white hover:text-contrast2 transition"
+            >
+              Ir al Reproductor
+            </button>
+            <button
+              onClick={logout}
+              className="px-6 py-3 text-lg font-bold text-contrast2 bg-white rounded-lg hover:bg-contrast2 hover:text-white transition"
+            >
+              Cerrar Sesión
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

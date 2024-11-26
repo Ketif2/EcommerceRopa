@@ -12,6 +12,7 @@ export default {
         secondary: '#141D26',
         primary: '#233446',
         contrast: '#36BEBB',
+        contrast2: '#C41E5C',
       },
       fontFamily: {
         poppins: ['Poppins', 'sans-serif'],

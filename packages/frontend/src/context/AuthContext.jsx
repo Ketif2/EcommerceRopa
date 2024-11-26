@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (accessToken, refreshToken, userData) => {
+    setLoading(true);
     await storeTokens(accessToken, refreshToken);
     setIsAuthenticated(true);
     setUser(userData);

@@ -52,3 +52,19 @@ export const fetchTrendingSongs = async (limit = 20) => {
     throw new Error("Failed to fetch trending songs");
   }
 };
+
+export const fetchRelaxSongs = async (limit = 20) => {
+  const genres = ["chill", "ambient", "acoustic", "classical", "jazz", "lo-fi", "soul"];
+  const randomGenre = genres[Math.floor(Math.random() * genres.length)]; // Seleccionar género aleatorio
+
+  try {
+    // Solicitar canciones trending por género
+    const response = await axios.get(`${BASE_URL}/tracks/trending?genre=${randomGenre}`);
+    // Limitar el número de resultados
+    const trendingSongs = response.data.data.slice(0, limit);
+    return trendingSongs;
+  } catch (error) {
+    console.error("Error al obtener canciones relajantes:", error.message);
+    throw new Error("Failed to fetch relaxing songs");
+  }
+};

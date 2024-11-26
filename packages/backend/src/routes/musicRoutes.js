@@ -1,5 +1,5 @@
 import express from 'express';
-import { getSongInfo, playSong, getTrendingSongs } from "../controllers/musicController.js";
+import { getSongInfo, playSong, getTrendingSongs, getRelaxSongs } from "../controllers/musicController.js";
 
 const router = express.Router();
 
@@ -11,5 +11,8 @@ router.get('/songs/:id/play', playSong);
 
 // Canciones populares (una lista de canciones para rellenar la pantalla de inicio)
 router.get("/trending", getTrendingSongs);
+
+router.get("/relax", getRelaxSongs);
+
 export default router;
 

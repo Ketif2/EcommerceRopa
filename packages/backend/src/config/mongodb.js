@@ -4,10 +4,7 @@ const mongoURL = 'mongodb://localhost:27017/musicplayer';
 
 const connectToDatabase = async () => {
   try {
-    await mongoose.connect(mongoURL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(mongoURL);
     console.log("Conexión exitosa a la base de datos");
     console.log(`Conectado a la base de datos en ${mongoURL}`);
   } catch (error) {
