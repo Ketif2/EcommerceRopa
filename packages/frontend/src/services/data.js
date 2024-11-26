@@ -22,7 +22,7 @@ export const fetchTrendingTracksData = async () => {
 // Recupera lista de canciones relajantes de generos aleatorios
 export const fetchRelaxingTracksData = async () => {
     try {
-        const response = await axios.get(`${BACKEND_API_URL}/relax`);
+        const response = await axios.get(`${BACKEND_API_URL}/api/relax`);
         return response.data;
     } catch (error) {
         console.error('Error fetching relaxing tracks:', error);
@@ -33,7 +33,7 @@ export const fetchRelaxingTracksData = async () => {
 // Obtener detalles de una canción por ID
 export const fetchTrackDetails = async (trackId) => {
     try {
-        const response = await axios.get(`${BACKEND_API_URL}/songs/${trackId}`);
+        const response = await axios.get(`${BACKEND_API_URL}/api/songs/${trackId}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching track details:', error);
@@ -43,14 +43,19 @@ export const fetchTrackDetails = async (trackId) => {
 
 // Obtener la URL de streaming de una canción
 export const fetchSongStream = async (trackId) => {
-    try {
-        const response = await axios.get(`${BACKEND_API_URL}/songs/${trackId}/play`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching song stream:', error);
-        throw error;
+    console.log("Fetching stream for track ID:", trackId);
+    if (!trackId) {
+      throw new Error('Invalid trackId: no se puede obtener la URL de streaming.');
     }
-};
+  
+    try {
+      const response = await axios.get(`${BACKEND_API_URL}/api/songs/${trackId}/play`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching song stream:', error);
+      throw error;
+    }
+  };
 
 
 

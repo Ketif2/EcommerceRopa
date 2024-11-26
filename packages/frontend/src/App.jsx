@@ -11,7 +11,14 @@ import { ChatProvider } from "./context/ChatContext";
 import { PlaylistsProvider } from "./context/PlaylistsContext";
 
 const ProtectedRoute = ({ element }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-[#141D26] text-white">
+        Cargando...
+      </div>
+    );
+  }
   return isAuthenticated ? element : <Navigate to="/login" />;
 };
 

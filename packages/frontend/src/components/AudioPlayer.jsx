@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,
@@ -24,6 +24,19 @@ const AudioPlayer = ({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
+
+  // Auto-play when URL changes
+  useEffect(() => {
+    if (url) {
+      const audio = audioRef.current;
+      audio.load(); // Load the new source
+      audio.play().then(() => {
+        setIsPlaying(true);
+      }).catch((error) => {
+        console.error("Error auto-playing the audio:", error);
+      });
+    }
+  }, [url]);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;

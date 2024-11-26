@@ -43,7 +43,7 @@ const HomePage = () => {
             </button>
             <button
               onClick={logout}
-              className="px-6 py-3 text-lg font-bold text-contrast2 bg-white rounded-lg hover:bg-contrast2 hover:text-white transition"
+              className="px-6 py-3 text-lg font-bold text-white bg-contrast2 rounded-lg hover:bg-white hover:text-contrast2 transition"
             >
               Cerrar Sesión
             </button>

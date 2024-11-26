@@ -29,37 +29,37 @@ connectToDatabase();
 const socketToUser = new Map();
 
 io.on("connection", (socket) => {
-    console.log(`User connected: ${socket.id}`);
-  
-    socket.on("setUserData", (userData) => {
-      // Asociar el username al socket
-      socketToUser.set(socket.id, { username: userData.username });
-      console.log(`User data set for socket ${socket.id}:`, socketToUser.get(socket.id));
-    });
-  
-    socket.on("chatMessage", (message) => {
-      const user = socketToUser.get(socket.id);
-      if (user) {
-        const chatMessage = {
-          text: message,
-          username: user.username, // Usa el username como identificador
-          timestamp: new Date().toISOString(),
-        };
-        console.log("Broadcasting message:", chatMessage);
-        io.emit("chatMessage", chatMessage);
-      }
-    });
-  
-    socket.on("disconnect", () => {
-      socketToUser.delete(socket.id);
-      console.log(`User disconnected: ${socket.id}`);
-    });
+  console.log(`User connected: ${socket.id}`);
+
+  socket.on("setUserData", (userData) => {
+    socketToUser.set(socket.id, { username: userData.username });
+    console.log(`User data set for socket ${socket.id}:`, socketToUser.get(socket.id));
   });
+
+  socket.on("chatMessage", (message) => {
+    const user = socketToUser.get(socket.id);
+    if (user) {
+      const chatMessage = {
+        text: message,
+        username: user.username,
+        timestamp: new Date().toISOString(),
+      };
+      console.log("Broadcasting message:", chatMessage);
+      io.emit("chatMessage", chatMessage);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    socketToUser.delete(socket.id);
+    console.log(`User disconnected: ${socket.id}`);
+  });
+});
 
   app.use(express.json({ limit: '100000000000000000000000mb' }));
   app.use(express.urlencoded({ limit: '100000000000000000000000mb', extended: true }));
 
 // --- Rutas de Express ---
+// Login
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
@@ -84,22 +84,22 @@ app.post("/login", async (req, res) => {
 
     res.cookie("token", accessToken, { httpOnly: true, maxAge: 3600000 });
 
-        // Responder con el token o mensaje de éxito
-        res.status(200).json({
-            message: "Login successful",
-            accessToken,
-            refreshToken: "dummyRefreshToken",
-            user: {
-                id: user._id,
-                username: user.user,
-            },
-        });
-    } catch (error) {
-        console.error('Error in /login:', error.message);
-        res.status(400).json({ error: error.message });
-    }
+    res.status(200).json({
+      message: "Login successful",
+      accessToken,
+      refreshToken: "dummyRefreshToken",
+      user: {
+        id: user._id,
+        username: user.user,
+      },
+    });
+  } catch (error) {
+    console.error("Error in /login:", error.message);
+    res.status(400).json({ error: error.message });
+  }
 });
 
+// Register
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
 
@@ -127,10 +127,43 @@ app.post("/register", async (req, res) => {
   }
 });
 
+// Verify Token
+app.get("/verify-token", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "No token provided" });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    // Verificar el token JWT
+    const decoded = jwt.verify(token, SECRET_JWT_KEY);
+
+    // Buscar al usuario en la base de datos
+    const user = await User.findById(decoded.userId).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({
+      id: user._id,
+      username: user.user,
+    });
+  } catch (error) {
+    console.error("Error verifying token:", error.message);
+    res.status(401).json({ error: "Invalid or expired token" });
+  }
+});
+
+// Default Route
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
 
+// Rutas adicionales
 app.use("/api", musicRoutes);
 
 // --- Iniciar el servidor ---
