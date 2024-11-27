@@ -7,6 +7,7 @@ import connectToDatabase from "./config/mongodb.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "./model/user.js";
+import playlistRoutes from './routes/playlistRoutes.js';
 import { PORT, SECRET_JWT_KEY } from "./config/config.js";
 import musicRoutes from './routes/musicRoutes.js'
 import { validateRegister, validateLogin } from "./utils/validations.js";
@@ -164,7 +165,7 @@ app.get("/", (req, res) => {
 // Rutas adicionales
 app.use("/api", musicRoutes);
 
-//app.use("/mymusic", playlistRoutes);
+app.use("/mymusic", playlistRoutes);
 
 // --- Iniciar el servidor ---
 server.listen(PORT, () => {
