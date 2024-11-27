@@ -4,7 +4,7 @@ import { IoIosPlay } from "react-icons/io";
 const Song = ({ artwork, title, genre, author, onClick  }) => {
   return (
     <div
-      className="flex items-center p-4 rounded-lg overflow-hidden border border-gray-700 bg-gray-800"
+      className="flex items-center p-4 rounded-lg overflow-hidden  bg-gray-800"
     >
       <img
         src={artwork}

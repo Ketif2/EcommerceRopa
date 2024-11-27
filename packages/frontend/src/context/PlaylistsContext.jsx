@@ -105,6 +105,27 @@ export const PlaylistsProvider = ({ children }) => {
     ));
   };
 
+
+  const removeSongFromPlaylist = async (playlistName, songId) => {
+    if (currentUser) {
+      try {
+        const response = await axiosInstance.delete(`/mymusic/playlists/songs`, {
+          data: { userId: currentUser.username, name: playlistName, songId },
+        });
+        const updatedPlaylist = response.data;
+        
+        // Actualizar estado local
+        setPlaylists(
+          playlists.map((p) =>
+            p.title === playlistName ? { ...p, songs: updatedPlaylist.songs } : p
+          )
+        );
+      } catch (error) {
+        console.error("Error removing song from playlist:", error);
+      }
+    }
+  };
+
   return (
     <PlaylistsContext.Provider
       value={{
@@ -113,7 +134,8 @@ export const PlaylistsProvider = ({ children }) => {
         updatePlaylist,
         removePlaylist,
         loadSongsForPlaylist,
-        updatePlaylistSongs, // Añadir método para actualizar canciones
+        updatePlaylistSongs,
+        removeSongFromPlaylist,
         setUser,
       }}
     >
