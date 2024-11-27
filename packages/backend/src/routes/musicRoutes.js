@@ -1,5 +1,4 @@
 import express from 'express';
-import { savePlaylists, loadPlaylists, deletePlaylist } from "../controllers/playlistController.js";
 import { getSongInfo, playSong, getTrendingSongs, getRelaxSongs } from "../controllers/musicController.js";
 
 const router = express.Router();
@@ -15,9 +14,9 @@ router.get("/trending", getTrendingSongs);
 
 router.get("/relax", getRelaxSongs);
 
-router.post("/playlists/save", savePlaylists);
-router.get("/playlists/load/:username", loadPlaylists);
-router.post("/playlists/delete", deletePlaylist);
+// router.post("/playlists/save", savePlaylists);
+// router.get("/playlists/load/:username", loadPlaylists);
+// router.post("/playlists/delete", deletePlaylist);
 
 export default router;
 

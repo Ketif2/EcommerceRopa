@@ -1,19 +1,19 @@
-import React from 'react'
+// MainContent.jsx
+import React from 'react';
 import MusicList from './MusicList';
 import Favorites from './Favorites';
 import Playlists from './PlayList';
 import Community from './Community';
 
-
-const MainContent = ({ section }) => {
-    return (
-      <div>
-      {section === 'MusicList' && <MusicList />}
-      {section === 'Favoritas' && <Favorites />}
-      {section === 'Playlists' && <Playlists />}
+const MainContent = ({ section, onTrackSelect }) => {
+  return (
+    <div>
+      {section === 'MusicList' && <MusicList onTrackSelect={onTrackSelect} />}
+      {section === 'Favoritas' && <Favorites onTrackSelect={onTrackSelect} />}
+      {section === 'Playlists' && <Playlists onTrackSelect={onTrackSelect} />}
       {section === 'Comunidad' && <Community />}
     </div>
-    )
-}
+  );
+};
 
-export default MainContent
+export default MainContent;

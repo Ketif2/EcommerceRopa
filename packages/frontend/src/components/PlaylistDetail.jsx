@@ -3,36 +3,18 @@ import Song from "./Song";
 import AudioPlayer from "./AudioPlayer"; // Asegúrate de que la ruta sea correcta
 import { fetchTrackDetails, fetchSongStream } from "../services/data";
 
-const PlaylistDetail = ({ playlist, songs, onClose, onRemoveSong }) => {
-  const [currentTrack, setCurrentTrack] = useState(null); // Canción seleccionada
+const PlaylistDetail = ({ playlist, songs, onClose, onRemoveSong, onTrackSelect }) => {
 
   if (!playlist) {
     return <div className="text-white">The selected playlist was not found.</div>;
   }
 
-  // Manejar la selección de una canción
-  const handlePlaySong = async (song) => {
-    try {
-      console.log("Fetching details for track ID:", song.id);
-      const trackDetails = await fetchTrackDetails(song.id);
-      console.log("Track details fetched:", trackDetails);
-  
-      // Accede al ID desde trackDetails.data
-      const trackId = trackDetails.data.id || song.id; // Usa song.id como respaldo
-      console.log("Fetching stream for track ID:", trackId);
-  
-      const streamResponse = await fetchSongStream(trackId);
-      const streamUrl = typeof streamResponse === "string" ? streamResponse : streamResponse.url;
-  
-      setCurrentTrack({
-        url: streamUrl,
-        title: trackDetails.data.title || song.title,
-        artwork: trackDetails.data.artwork || song.artwork,
-      });
-    } catch (error) {
-      console.error("Error fetching song stream:", error);
+  const handlePlaySong = (song, index) => {
+    if (onTrackSelect) {
+      onTrackSelect(song.id, songs, index);
     }
   };
+
   
 
   return (
@@ -65,31 +47,20 @@ const PlaylistDetail = ({ playlist, songs, onClose, onRemoveSong }) => {
       <h3 className="text-xl text-white mb-4">Song List</h3>
       {songs && songs.length > 0 ? (
         <ul className="space-y-4 overflow-y-auto max-h-96 pr-2">
-          {songs.map((song) => (
+          {songs.map((song, index) => (
             <li key={song.id}>
               <Song
                 artwork={song.artwork}
                 title={song.title}
                 genre={song.genre || "Unknown"}
                 author={song.artist || "Unknown"}
-                onClick={() => handlePlaySong(song)}
+                onClick={() => handlePlaySong(song, index)}
               />
             </li>
           ))}
         </ul>
       ) : (
         <div className="text-white">There are no songs available.</div>
-      )}
-
-      {/* Integrar el AudioPlayer para reproducir canciones */}
-      {currentTrack && (
-        <div className="mt-6">
-          <AudioPlayer
-            url={currentTrack.url}
-            titleEpisode={currentTrack.title}
-            podcastImage={currentTrack.artwork}
-          />
-        </div>
       )}
     </div>
   );

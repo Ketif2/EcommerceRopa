@@ -47,7 +47,6 @@ export const fetchSongStream = async (trackId) => {
     if (!trackId) {
       throw new Error('Invalid trackId: no se puede obtener la URL de streaming.');
     }
-  
     try {
       const response = await axios.get(`${BACKEND_API_URL}/api/songs/${trackId}/play`);
       return response.data;

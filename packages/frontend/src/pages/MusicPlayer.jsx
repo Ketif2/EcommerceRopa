@@ -6,11 +6,12 @@ import Community from '../components/Community';
 import AudioPlayer from '../components/AudioPlayer';
 import MusicList from '../components/MusicList';
 import { fetchSongStream, fetchTrackDetails } from '../services/data';
+import PlaylistDetail from '../components/PlaylistDetail';
 
 function MusicPlayer() {
   const [selectedSection, setSelectedSection] = useState('MusicList');
   const [currentTrack, setCurrentTrack] = useState(null);
-  const [tracks, setTracks] = useState([]); 
+  const [tracks, setTracks] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
 
   useEffect(() => {
@@ -75,7 +76,7 @@ function MusicPlayer() {
       const nextIndex = currentIndex + 1;
       handleTrackSelect(tracks[nextIndex].id, tracks, nextIndex);
     } else {
-      console.log("No hay más episodios para reproducir");
+      console.log("No hay más canciones para reproducir");
     }
   };
 
@@ -84,23 +85,23 @@ function MusicPlayer() {
       const prevIndex = currentIndex - 1;
       handleTrackSelect(tracks[prevIndex].id, tracks, prevIndex);
     } else {
-      console.log("No hay más episodios para retroceder");
+      console.log("No hay más canciones para retroceder");
     }
   };
 
   const renderMainContent = () => {
-    if (selectedSection === 'Comunidad') {
-      return <Community />;
-    } else if (selectedSection === 'MusicList') {
-      return <MusicList onTrackSelect={(trackId, allTracks, index) => handleTrackSelect(trackId, allTracks, index)} />;
-    }
-    return <MainContent section={selectedSection} />;
+    return (
+      <MainContent
+        section={selectedSection}
+        onTrackSelect={handleTrackSelect}
+      />
+    );
   };
 
   return (
     <div className="flex flex-col bg-primary scrollbar-thin">
       <div className="px-4 py-2">
-      <Header />
+        <Header />
       </div>
       <div className="flex flex-1">
         <div className="flex flex-col w-1/5 min-w-72 bg-secondary">
@@ -122,7 +123,7 @@ function MusicPlayer() {
           <div className="h-auto p-4">
             {renderMainContent()}
           </div>
-      </div>
+        </div>
       </div>
     </div>
   );

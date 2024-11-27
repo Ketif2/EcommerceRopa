@@ -1,23 +1,23 @@
-import express from "express";
-import {
-  handleCreatePlaylist,
-  handleAddSongToPlaylist,
-  handleRemoveSongFromPlaylist,
-  handleDeletePlaylist,
-} from "../controllers/playlistController.js";
+// import express from "express";
+// import {
+//   handleCreatePlaylist,
+//   handleAddSongToPlaylist,
+//   handleRemoveSongFromPlaylist,
+//   handleDeletePlaylist,
+// } from "../controllers/playlistController.js";
 
-const router = express.Router();
+// const router = express.Router();
 
-// Crear una playlist
-router.post("/playlists", handleCreatePlaylist);
+// // Crear una playlist
+// router.post("/playlists", handleCreatePlaylist);
 
-// Añadir una canción a una playlist
-router.post("/playlists/songs", handleAddSongToPlaylist);
+// // Añadir una canción a una playlist
+// router.post("/playlists/songs", handleAddSongToPlaylist);
 
-// Quitar una canción de una playlist
-router.delete("/playlists/songs", handleRemoveSongFromPlaylist);
+// // Quitar una canción de una playlist
+// router.delete("/playlists/songs", handleRemoveSongFromPlaylist);
 
-// Eliminar una playlist
-router.delete("/playlists", handleDeletePlaylist);
+// // Eliminar una playlist
+// router.delete("/playlists", handleDeletePlaylist);
 
-export default router;
+// export default router;

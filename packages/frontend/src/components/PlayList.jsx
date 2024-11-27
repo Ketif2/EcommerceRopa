@@ -3,7 +3,7 @@ import { usePlaylists } from "../context/PlaylistsContext";
 import PlaylistModal from "./PlaylistModal";
 import PlaylistDetail from "./PlaylistDetail";
 
-const Playlists = ({ onPlaySong }) => {
+const Playlists = ({ onTrackSelect  }) => {
   const {
     playlists,
     addPlaylist,
@@ -77,9 +77,9 @@ const Playlists = ({ onPlaySong }) => {
         playlist={viewPlaylist}
         songs={playlistSongs}
         onClose={() => setViewPlaylist(null)}
-        onPlaySong={onPlaySong}
         onRemoveSong={handleRemoveSong}
         updatePlaylistSongs={updatePlaylistSongs}
+        onTrackSelect={onTrackSelect} // Pasamos onTrackSelect aquí
       />
     );
   }

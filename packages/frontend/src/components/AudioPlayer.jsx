@@ -20,20 +20,63 @@ const AudioPlayer = ({
 }) => {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(0); // Store as number
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
 
   useEffect(() => {
+    const audio = audioRef.current;
+
+    // Handler for when metadata is loaded
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration);
+    };
+
+    // Handler for time updates
+    const handleTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+      setProgress((audio.currentTime / audio.duration) * 100 || 0);
+    };
+
+    // Handler for when audio ends
+    const handleEnded = () => {
+      if (onNextEpisode) {
+        onNextEpisode();
+      } else {
+        setIsPlaying(false);
+        setCurrentTime(0);
+        setProgress(0);
+      }
+    };
+
+    // Attach event listeners
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("ended", handleEnded);
+
+    // Cleanup
+    return () => {
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, [onNextEpisode]);
+
+  useEffect(() => {
     if (url) {
       const audio = audioRef.current;
-      audio.load(); 
-      audio.play().then(() => {
-        setIsPlaying(true);
-      }).catch((error) => {
-        console.error("Error auto-playing the audio:", error);
-      });
+      audio.src = url;
+      audio.volume = volume;
+
+      audio
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch((error) => {
+          console.error("Error auto-playing the audio:", error);
+        });
     }
   }, [url]);
 
@@ -41,28 +84,29 @@ const AudioPlayer = ({
     const audio = audioRef.current;
     if (isPlaying) {
       audio.pause();
+      setIsPlaying(false);
     } else {
-      audio.play();
+      audio
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch((error) => {
+          console.error("Error playing the audio:", error);
+        });
     }
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleTimeUpdate = () => {
-    const audio = audioRef.current;
-    setProgress((audio.currentTime / audio.duration) * 100 || 0);
-    setCurrentTime(audio.currentTime);
-    setDuration(audio.duration || 0);
   };
 
   const handleProgressChange = (e) => {
     const audio = audioRef.current;
-    const newTime = (e.target.value / 100) * audio.duration;
+    const newProgress = parseFloat(e.target.value);
+    const newTime = (newProgress / 100) * audio.duration;
     audio.currentTime = newTime;
-    setProgress(e.target.value);
+    setProgress(newProgress);
   };
 
   const handleVolumeChange = (e) => {
-    const newVolume = e.target.value;
+    const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
     if (audioRef.current) {
       audioRef.current.volume = newVolume;
@@ -71,22 +115,18 @@ const AudioPlayer = ({
 
   const handleBackward5Seconds = () => {
     const audio = audioRef.current;
-    const newTime = audio.currentTime - 5;
-    audio.currentTime = newTime > 0 ? newTime : 0;
-    setCurrentTime(audio.currentTime);
-    setProgress((audio.currentTime / audio.duration) * 100);
+    const newTime = Math.max(audio.currentTime - 5, 0);
+    audio.currentTime = newTime;
+    setCurrentTime(newTime);
+    setProgress((newTime / audio.duration) * 100);
   };
 
   const handleForward5Seconds = () => {
     const audio = audioRef.current;
-    const newTime = audio.currentTime + 5;
-    audio.currentTime = newTime < audio.duration ? newTime : audio.duration;
-    setCurrentTime(audio.currentTime);
-    setProgress((audio.currentTime / audio.duration) * 100);
-  };
-
-  const handleAudioEnded = () => {
-    onNextEpisode();
+    const newTime = Math.min(audio.currentTime + 5, audio.duration);
+    audio.currentTime = newTime;
+    setCurrentTime(newTime);
+    setProgress((newTime / audio.duration) * 100);
   };
 
   return (
@@ -97,17 +137,18 @@ const AudioPlayer = ({
           src={podcastImage}
           alt="Podcast Cover"
           className="rounded-md bg-center bg-cover w-auto h-auto"
-          style={{ backgroundImage: "cover" }}
         />
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={onBackwardEpisode}
-          className="text-white hover:text-contrast"
-        >
-          <FontAwesomeIcon icon={faBackwardStep} size="lg" />
-        </button>
+        {onBackwardEpisode && (
+          <button
+            onClick={onBackwardEpisode}
+            className="text-white hover:text-contrast"
+          >
+            <FontAwesomeIcon icon={faBackwardStep} size="lg" />
+          </button>
+        )}
         <button
           onClick={handleBackward5Seconds}
           className="text-white hover:text-contrast pl-2"
@@ -126,12 +167,14 @@ const AudioPlayer = ({
         >
           <FontAwesomeIcon icon={faForward} size="lg" />
         </button>
-        <button
-          onClick={onNextEpisode}
-          className="text-white hover:text-contrast"
-        >
-          <FontAwesomeIcon icon={faForwardStep} size="lg" />
-        </button>
+        {onNextEpisode && (
+          <button
+            onClick={onNextEpisode}
+            className="text-white hover:text-contrast"
+          >
+            <FontAwesomeIcon icon={faForwardStep} size="lg" />
+          </button>
+        )}
       </div>
 
       <div>
@@ -148,7 +191,10 @@ const AudioPlayer = ({
       </div>
 
       <div className="flex items-center justify-between mt-4">
-        <FontAwesomeIcon icon={volume > 0.5 ? faVolumeUp : faVolumeDown} className="size-5" />
+        <FontAwesomeIcon
+          icon={volume > 0.5 ? faVolumeUp : faVolumeDown}
+          className="size-5"
+        />
         <input
           type="range"
           value={volume}
@@ -156,17 +202,11 @@ const AudioPlayer = ({
           max="1"
           step="0.01"
           onChange={handleVolumeChange}
-          className="w-11/12  appearance-none bg-contrast rounded-lg h-1 focus:outline-none"
+          className="w-11/12 appearance-none bg-contrast rounded-lg h-1 focus:outline-none"
         />
       </div>
 
-      <audio
-        ref={audioRef}
-        src={url}
-        onTimeUpdate={handleTimeUpdate}
-        onEnded={handleAudioEnded}
-        className="hidden"
-      />
+      <audio ref={audioRef} className="hidden" />
     </div>
   );
 };
