@@ -10,8 +10,8 @@ import { fetchSongStream, fetchTrackDetails } from '../services/data';
 function MusicPlayer() {
   const [selectedSection, setSelectedSection] = useState('MusicList');
   const [currentTrack, setCurrentTrack] = useState(null);
-  const [tracks, setTracks] = useState([]); // List of available tracks
-  const [currentIndex, setCurrentIndex] = useState(-1); // Current index in the list of tracks
+  const [tracks, setTracks] = useState([]); 
+  const [currentIndex, setCurrentIndex] = useState(-1);
 
   const handleSectionChange = (section) => {
     setSelectedSection(section);
@@ -25,7 +25,6 @@ function MusicPlayer() {
     console.log("Fetching details for track ID:", trackId);
 
     try {
-      // Obtener los detalles del track usando el trackId
       const trackDetailsResponse = await fetchTrackDetails(trackId);
       const trackDetails = trackDetailsResponse.data || trackDetailsResponse;
 
@@ -34,18 +33,15 @@ function MusicPlayer() {
         return;
       }
 
-      // Obtener la URL de streaming del track
       const streamData = await fetchSongStream(trackDetails.id);
 
-      // Set current track
       setCurrentTrack({
-        url: streamData.url || '', // URL obtenida desde el endpoint de streaming
+        url: streamData.url || '', 
         title: trackDetails.title || 'Unknown Title',
         artwork: trackDetails.artwork?.['480x480'] || 'https://via.placeholder.com/480',
         author: trackDetails.user?.name || 'Unknown Author',
       });
 
-      // Update the list of tracks and current index
       if (allTracks.length > 0) {
         setTracks(allTracks);
         setCurrentIndex(selectedIndex);
@@ -83,31 +79,29 @@ function MusicPlayer() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#141D26]">
+    <div className="flex flex-col min-h-screen bg-primary">
       <Header />
-      <div className="flex flex-1 overflow-hidden">
-        <div className="flex flex-col w-72 min-w-72 bg-[#141D26]">
-          {/* Sidebar content */}
-          <div className="flex-grow overflow-y-auto">
+      <div className="flex flex-1">
+        <div className="flex flex-col w-1/5 min-w-72 bg-secondary">
+          <div className="">
             <Sidebar onSectionChange={handleSectionChange} />
           </div>
-
-          <div className="flex-shrink-0">
+          <div className="w-full">
             <AudioPlayer
               url={currentTrack?.url}
               onNextEpisode={handleNextEpisode}
               onBackwardEpisode={handleBackwardEpisode}
-              titleEpisode={currentTrack?.title || 'Sin título'}
+              titleEpisode={currentTrack?.title || 'Escoje una canción'}
               podcastImage={currentTrack?.artwork || 'https://via.placeholder.com/480'}
             />
           </div>
         </div>
 
-        <div className="flex-1 bg-[#141D26] overflow-hidden">
-          <div className="h-full overflow-hidden px-6 py-4">
+        <div className="flex-1 bg-secondary ">
+          <div className="min-h-0 h-full">
             {renderMainContent()}
           </div>
-        </div>
+      </div>
       </div>
     </div>
   );

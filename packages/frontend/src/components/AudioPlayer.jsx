@@ -87,13 +87,13 @@ const AudioPlayer = ({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-primary text-white rounded-lg shadow-lg p-3">
-      <h3 className="text-lg font-bold pb-2">{titleEpisode}</h3>
-      <div className="flex items-center gap-4 mb-4 justify-center">
+    <div className="w-full max-w-md mx-auto bg-primary text-white rounded-lg shadow-lg p-4">
+      <h3 className="text-xl font-bold pb-4">{titleEpisode}</h3>
+      <div className="flex items-center mb-4 justify-center">
         <img
           src={podcastImage}
           alt="Podcast Cover"
-          className="rounded-md bg-center bg-cover w-40 h-auto"
+          className="rounded-md bg-center bg-cover w-auto h-auto"
           style={{ backgroundImage: "cover" }}
         />
       </div>
@@ -101,33 +101,33 @@ const AudioPlayer = ({
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={handleBackward5Seconds}
-          className="text-white hover:text-blue-400"
-        >
-          <FontAwesomeIcon icon={faBackward} size="lg" />
-        </button>
-        <button
-          onClick={onBackwardEpisode}
-          className="text-white hover:text-blue-400"
+          className="text-white hover:text-contrast"
         >
           <FontAwesomeIcon icon={faBackwardStep} size="lg" />
         </button>
         <button
+          onClick={onBackwardEpisode}
+          className="text-white hover:text-contrast"
+        >
+          <FontAwesomeIcon icon={faBackward} size="lg" />
+        </button>
+        <button
           onClick={togglePlayPause}
-          className="bg-blue-500 text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-blue-600"
+          className="bg-blue-500 text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-blue-700"
         >
           <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} size="lg" />
         </button>
         <button
           onClick={onNextEpisode}
-          className="text-white hover:text-blue-400"
+          className="text-white hover:text-contrast"
         >
-          <FontAwesomeIcon icon={faForwardStep} size="lg" />
+          <FontAwesomeIcon icon={faForward} size="lg" />
         </button>
         <button
           onClick={handleForward5Seconds}
-          className="text-white hover:text-blue-400"
+          className="text-white hover:text-contrast"
         >
-          <FontAwesomeIcon icon={faForward} size="lg" />
+          <FontAwesomeIcon icon={faForwardStep} size="lg" />
         </button>
       </div>
 
@@ -136,7 +136,7 @@ const AudioPlayer = ({
           type="range"
           value={progress}
           onChange={handleProgressChange}
-          className="w-full appearance-none bg-gray-600 rounded-lg h-1 focus:outline-none"
+          className="w-full appearance-none bg-contrast rounded-lg h-1 focus:outline-none"
         />
         <div className="flex justify-between text-sm mt-1">
           <span>{formatTime(currentTime)}</span>
@@ -153,7 +153,7 @@ const AudioPlayer = ({
           max="1"
           step="0.01"
           onChange={handleVolumeChange}
-          className="w-11/12  appearance-none bg-gray-600 rounded-lg h-1 focus:outline-none"
+          className="w-11/12  appearance-none bg-contrast rounded-lg h-1 focus:outline-none"
         />
       </div>
 

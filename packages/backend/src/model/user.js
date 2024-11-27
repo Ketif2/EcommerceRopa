@@ -1,5 +1,16 @@
 import mongoose from "mongoose";
 
+const playlistSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  songs: {
+    type: [String], // IDs de canciones
+    default: [],
+  },
+});
+
 const userSchema = new mongoose.Schema({
   user: {
     type: String,
@@ -14,14 +25,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
-  favorites: {
-    type: Array,
+  playlists: {
+    type: [playlistSchema], // Relación con el esquema de playlists
     default: [],
-  },
-  lastListened: {
-    type: Array,
-    default: [],
-    max: 10,
   },
 });
 

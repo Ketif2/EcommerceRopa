@@ -9,12 +9,12 @@ const Sidebar = ({ onSectionChange }) => {
     ];
   return (
     <div className='w-full bg-secondary text-white p-4 border-r border-contrast flex flex-col'>
-        <nav className="flex flex-col gap-2">
+        <nav className="flex flex-col gap-3">
             {menuItems.map((item) => (
                 <button
                     key={item.id}
                     onClick={() => onSectionChange(item.component)}
-                    className='w-full text-left py-2 px-4 hover:bg-primary rounded-lg'
+                    className='w-full text-left py-2 px-4 hover:bg-contrast hover:text-black rounded-lg'
                 >{item.label}
                 </button>
             ))}

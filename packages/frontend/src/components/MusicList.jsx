@@ -32,29 +32,23 @@ const MusicList = ({ onTrackSelect }) => {
   }, []);
 
   const handleTrackClick = (trackId, index) => {
-    const allTracks = [...trendingTracks]; // Can be combined with other tracks if needed
+    const allTracks = [...trendingTracks]; 
     onTrackSelect(trackId, allTracks, index);
   };
   
 
   return (
-    <div className="flex-1 overflow-y-scroll h-screen p-6 bg-secondary">
+    <div className="flex-1 overflow-auto h-screen scrollbar-thin p-6 bg-secondary">
       <div>
         <h2 className="text-white text-xl mb-4">Descubre lo nuevo</h2>
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-4 gap-4">
         {relaxingTracks.length > 0 ? (
-            relaxingTracks.map((track, index) => (
-              <div
-                key={track.id}
-                className="aspect-square rounded-lg overflow-hidden cursor-pointer border-2 border-red-500"
-                onClick={() => handleTrackClick(track.id, index)}
-              >
+            relaxingTracks.map((track) => (
                 <img
                   src={track.artwork["480x480"]}
                   alt={track.description || "Cover image"}
-                  className="w-full h-full object-cover"
+                  className="object-cover rounded-lg border-contrast border-opacity-80 border-r-2 border-b-2"
                 />
-              </div>
             ))
           ) : (
             <p className="text-white">Cargando...</p>

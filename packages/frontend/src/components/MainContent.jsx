@@ -7,7 +7,7 @@ import Community from './Community';
 
 const MainContent = ({ section }) => {
     return (
-      <div className="flex-1 bg-secondary text-white p-4 overflow-y-auto">
+      <div>
       {section === 'MusicList' && <MusicList />}
       {section === 'Favoritas' && <Favorites />}
       {section === 'Playlists' && <Playlists />}

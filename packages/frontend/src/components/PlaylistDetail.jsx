@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Song from "./Song";
 import AudioPlayer from "./AudioPlayer"; // Asegúrate de que la ruta sea correcta
+import { fetchTrackDetails, fetchSongStream } from "../services/data";
 
 const PlaylistDetail = ({ playlist, songs, onClose, onRemoveSong }) => {
   const [currentTrack, setCurrentTrack] = useState(null); // Canción seleccionada
@@ -10,14 +11,29 @@ const PlaylistDetail = ({ playlist, songs, onClose, onRemoveSong }) => {
   }
 
   // Manejar la selección de una canción
-  const handlePlaySong = (song) => {
-    console.log("Canción seleccionada:", song);
-    setCurrentTrack({
-      url: song.streamUrl,
-      title: song.title,
-      artwork: song.artwork,
-    });
+  const handlePlaySong = async (song) => {
+    try {
+      console.log("Fetching details for track ID:", song.id);
+      const trackDetails = await fetchTrackDetails(song.id);
+      console.log("Track details fetched:", trackDetails);
+  
+      // Accede al ID desde trackDetails.data
+      const trackId = trackDetails.data.id || song.id; // Usa song.id como respaldo
+      console.log("Fetching stream for track ID:", trackId);
+  
+      const streamResponse = await fetchSongStream(trackId);
+      const streamUrl = typeof streamResponse === "string" ? streamResponse : streamResponse.url;
+  
+      setCurrentTrack({
+        url: streamUrl,
+        title: trackDetails.data.title || song.title,
+        artwork: trackDetails.data.artwork || song.artwork,
+      });
+    } catch (error) {
+      console.error("Error fetching song stream:", error);
+    }
   };
+  
 
   return (
     <div className="p-4">
