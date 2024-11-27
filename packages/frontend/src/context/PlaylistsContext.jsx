@@ -83,11 +83,13 @@ export const PlaylistsProvider = ({ children }) => {
   const loadSongsForPlaylist = async (playlistId) => {
     try {
       const response = await fetchTrendingTracksData();
+      console.log("Respuesta del backend para playlist:", response);
       return response.map((track) => ({
         id: track.id,
         title: track.title,
         artist: track.user.name,
         artwork: track.artwork["150x150"],
+        streamUrl: `http://localhost:3000/api/tracks/${track.id}/stream`,
       }));
     } catch (error) {
       console.error("Error al cargar canciones desde el backend:", error);

@@ -34,15 +34,16 @@ const Playlists = ({ onPlaySong }) => {
 
   const handleViewPlaylist = async (playlist) => {
     try {
-      setIsLoading(true); // Mostrar estado de carga
-      const songs = await loadSongsForPlaylist(playlist.id); // Llamar a la API
-      setPlaylistSongs(songs); // Establecer canciones en el estado
-      setViewPlaylist(playlist); // Establecer playlist activa
+      setIsLoading(true);
+      const songs = await loadSongsForPlaylist(playlist.id);
+      console.log("Canciones cargadas para la playlist:", songs); // Depurar canciones cargadas
+      setPlaylistSongs(songs);
+      setViewPlaylist(playlist);
     } catch (error) {
       console.error("Error al cargar canciones para la playlist:", error);
-      setPlaylistSongs([]); // En caso de error, limpiar canciones
+      setPlaylistSongs([]);
     } finally {
-      setIsLoading(false); // Ocultar estado de carga
+      setIsLoading(false);
     }
   };
 

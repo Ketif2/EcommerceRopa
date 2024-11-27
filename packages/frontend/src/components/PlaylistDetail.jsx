@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
+import Song from "./Song";
+import AudioPlayer from "./AudioPlayer"; // Asegúrate de que la ruta sea correcta
 
-const PlaylistDetail = ({ playlist, songs, onClose, onPlaySong, onRemoveSong }) => {
+const PlaylistDetail = ({ playlist, songs, onClose, onRemoveSong }) => {
+  const [currentTrack, setCurrentTrack] = useState(null); // Canción seleccionada
+
   if (!playlist) {
     return <div className="text-white">The selected playlist was not found.</div>;
   }
 
-  
+  // Manejar la selección de una canción
+  const handlePlaySong = (song) => {
+    console.log("Canción seleccionada:", song);
+    setCurrentTrack({
+      url: song.streamUrl,
+      title: song.title,
+      artwork: song.artwork,
+    });
+  };
 
   return (
     <div className="p-4">
@@ -38,44 +50,30 @@ const PlaylistDetail = ({ playlist, songs, onClose, onPlaySong, onRemoveSong }) 
       {songs && songs.length > 0 ? (
         <ul className="space-y-4 overflow-y-auto max-h-96 pr-2">
           {songs.map((song) => (
-            <li
-              key={song.id}
-              className="flex items-center justify-between bg-gray-800 rounded-lg p-4 hover:bg-gray-700"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gray-600 rounded-md">
-                  {song.artwork && (
-                    <img
-                      src={song.artwork}
-                      alt={song.title}
-                      className="w-full h-full object-cover rounded-md"
-                    />
-                  )}
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold">{song.title}</h4>
-                  <p className="text-gray-400 text-sm">{song.artist}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => onPlaySong(song.streamUrl, song.title, song.artwork)}
-                  className="text-blue-400 hover:underline"
-                >
-                  Reproducir
-                </button>
-                <button
-                  onClick={() => onRemoveSong(song.id)}
-                  className="text-red-400 hover:underline"
-                >
-                  Eliminar
-                </button>
-              </div>
+            <li key={song.id}>
+              <Song
+                artwork={song.artwork}
+                title={song.title}
+                genre={song.genre || "Unknown"}
+                author={song.artist || "Unknown"}
+                onClick={() => handlePlaySong(song)}
+              />
             </li>
           ))}
         </ul>
       ) : (
         <div className="text-white">There are no songs available.</div>
+      )}
+
+      {/* Integrar el AudioPlayer para reproducir canciones */}
+      {currentTrack && (
+        <div className="mt-6">
+          <AudioPlayer
+            url={currentTrack.url}
+            titleEpisode={currentTrack.title}
+            podcastImage={currentTrack.artwork}
+          />
+        </div>
       )}
     </div>
   );
