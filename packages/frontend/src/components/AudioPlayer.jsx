@@ -25,11 +25,10 @@ const AudioPlayer = ({
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
 
-  // Auto-play when URL changes
   useEffect(() => {
     if (url) {
       const audio = audioRef.current;
-      audio.load(); // Load the new source
+      audio.load(); 
       audio.play().then(() => {
         setIsPlaying(true);
       }).catch((error) => {
@@ -86,6 +85,10 @@ const AudioPlayer = ({
     setProgress((audio.currentTime / audio.duration) * 100);
   };
 
+  const handleAudioEnded = () => {
+    onNextEpisode();
+  };
+
   return (
     <div className="w-full max-w-md mx-auto bg-primary text-white rounded-lg shadow-lg p-4">
       <h3 className="text-xl font-bold pb-4">{titleEpisode}</h3>
@@ -100,14 +103,14 @@ const AudioPlayer = ({
 
       <div className="flex items-center justify-between mb-4">
         <button
-          onClick={handleBackward5Seconds}
+          onClick={onBackwardEpisode}
           className="text-white hover:text-contrast"
         >
           <FontAwesomeIcon icon={faBackwardStep} size="lg" />
         </button>
         <button
-          onClick={onBackwardEpisode}
-          className="text-white hover:text-contrast"
+          onClick={handleBackward5Seconds}
+          className="text-white hover:text-contrast pl-2"
         >
           <FontAwesomeIcon icon={faBackward} size="lg" />
         </button>
@@ -118,13 +121,13 @@ const AudioPlayer = ({
           <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} size="lg" />
         </button>
         <button
-          onClick={onNextEpisode}
-          className="text-white hover:text-contrast"
+          onClick={handleForward5Seconds}
+          className="text-white hover:text-contrast pr-2"
         >
           <FontAwesomeIcon icon={faForward} size="lg" />
         </button>
         <button
-          onClick={handleForward5Seconds}
+          onClick={onNextEpisode}
           className="text-white hover:text-contrast"
         >
           <FontAwesomeIcon icon={faForwardStep} size="lg" />
@@ -161,6 +164,7 @@ const AudioPlayer = ({
         ref={audioRef}
         src={url}
         onTimeUpdate={handleTimeUpdate}
+        onEnded={handleAudioEnded}
         className="hidden"
       />
     </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import MainContent from '../components/MainContent';
@@ -12,6 +12,25 @@ function MusicPlayer() {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [tracks, setTracks] = useState([]); 
   const [currentIndex, setCurrentIndex] = useState(-1);
+
+  useEffect(() => {
+    const lastTrack = localStorage.getItem('lastTrack');
+    if (lastTrack) {
+      const parsedTrack = JSON.parse(lastTrack);
+      setCurrentTrack(parsedTrack.track);
+      setTracks(parsedTrack.tracks);
+      setCurrentIndex(parsedTrack.index);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentTrack) {
+      localStorage.setItem(
+        'lastTrack',
+        JSON.stringify({ track: currentTrack, tracks: tracks, index: currentIndex })
+      );
+    }
+  }, [currentTrack, tracks, currentIndex]);
 
   const handleSectionChange = (section) => {
     setSelectedSection(section);
@@ -79,14 +98,16 @@ function MusicPlayer() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-primary">
+    <div className="flex flex-col bg-primary scrollbar-thin">
+      <div className="px-4 py-2">
       <Header />
+      </div>
       <div className="flex flex-1">
         <div className="flex flex-col w-1/5 min-w-72 bg-secondary">
-          <div className="">
+          <div>
             <Sidebar onSectionChange={handleSectionChange} />
           </div>
-          <div className="w-full">
+          <div className="w-full pt-2">
             <AudioPlayer
               url={currentTrack?.url}
               onNextEpisode={handleNextEpisode}
@@ -97,8 +118,8 @@ function MusicPlayer() {
           </div>
         </div>
 
-        <div className="flex-1 bg-secondary ">
-          <div className="min-h-0 h-full">
+        <div className="flex-1 bg-secondary">
+          <div className="h-auto p-4">
             {renderMainContent()}
           </div>
       </div>

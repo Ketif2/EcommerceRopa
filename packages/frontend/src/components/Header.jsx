@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const Header = () => {
   const navigate = useNavigate();
   return (
-    <div className="flex items-center justify-between px-4 py-2 bg-primary">
+    <div className="flex items-center justify-between bg-primary">
       <button 
         className="text-white"
         onClick={() => navigate('/')}
