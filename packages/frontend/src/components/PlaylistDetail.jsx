@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
+import Song from "./Song";
+import AudioPlayer from "./AudioPlayer"; // Asegúrate de que la ruta sea correcta
+import { fetchTrackDetails, fetchSongStream } from "../services/data";
 
-const PlaylistDetail = ({ playlist, songs, onClose, onPlaySong, onRemoveSong }) => {
+const PlaylistDetail = ({ playlist, songs, onClose, onRemoveSong, onTrackSelect }) => {
+
   if (!playlist) {
     return <div className="text-white">The selected playlist was not found.</div>;
   }
+
+  const handlePlaySong = (song, index) => {
+    if (onTrackSelect) {
+      onTrackSelect(song.id, songs, index);
+    }
+  };
+
+  
 
   return (
     <div className="p-4">
@@ -35,40 +47,15 @@ const PlaylistDetail = ({ playlist, songs, onClose, onPlaySong, onRemoveSong }) 
       <h3 className="text-xl text-white mb-4">Song List</h3>
       {songs && songs.length > 0 ? (
         <ul className="space-y-4 overflow-y-auto max-h-96 pr-2">
-          {songs.map((song) => (
-            <li
-              key={song.id}
-              className="flex items-center justify-between bg-gray-800 rounded-lg p-4 hover:bg-gray-700"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gray-600 rounded-md">
-                  {song.artwork && (
-                    <img
-                      src={song.artwork}
-                      alt={song.title}
-                      className="w-full h-full object-cover rounded-md"
-                    />
-                  )}
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold">{song.title}</h4>
-                  <p className="text-gray-400 text-sm">{song.artist}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => onPlaySong(song.streamUrl, song.title, song.artwork)}
-                  className="text-blue-400 hover:underline"
-                >
-                  Reproducir
-                </button>
-                <button
-                  onClick={() => onRemoveSong(song.id)}
-                  className="text-red-400 hover:underline"
-                >
-                  Eliminar
-                </button>
-              </div>
+          {songs.map((song, index) => (
+            <li key={song.id}>
+              <Song
+                artwork={song.artwork}
+                title={song.title}
+                genre={song.genre || "Unknown"}
+                author={song.artist || "Unknown"}
+                onClick={() => handlePlaySong(song, index)}
+              />
             </li>
           ))}
         </ul>

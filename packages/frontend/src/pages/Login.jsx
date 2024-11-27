@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { usePlaylists } from "../context/PlaylistsContext";
 import { loginUser } from "../utils/api";
 
 const Login = () => {
   const { login } = useAuth();
+  const { setUser } = usePlaylists();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -16,6 +18,7 @@ const Login = () => {
     try {
       const { accessToken, refreshToken, user } = await loginUser(username, password);
       await login(accessToken, refreshToken, user);
+      setUser({ username: user.username });
       setTimeout(() => {
         navigate("/");
       }, 1000);

@@ -3,13 +3,14 @@ import { usePlaylists } from "../context/PlaylistsContext";
 import PlaylistModal from "./PlaylistModal";
 import PlaylistDetail from "./PlaylistDetail";
 
-const Playlists = ({ onPlaySong }) => {
+const Playlists = ({ onTrackSelect  }) => {
   const {
     playlists,
     addPlaylist,
     updatePlaylist,
     removePlaylist,
     loadSongsForPlaylist,
+    updatePlaylistSongs,
   } = usePlaylists();
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
   const [viewPlaylist, setViewPlaylist] = useState(null);
@@ -33,15 +34,16 @@ const Playlists = ({ onPlaySong }) => {
 
   const handleViewPlaylist = async (playlist) => {
     try {
-      setIsLoading(true); // Mostrar estado de carga
-      const songs = await loadSongsForPlaylist(playlist.id); // Llamar a la API
-      setPlaylistSongs(songs); // Establecer canciones en el estado
-      setViewPlaylist(playlist); // Establecer playlist activa
+      setIsLoading(true);
+      const songs = await loadSongsForPlaylist(playlist.id);
+      console.log("Canciones cargadas para la playlist:", songs); // Depurar canciones cargadas
+      setPlaylistSongs(songs);
+      setViewPlaylist(playlist);
     } catch (error) {
       console.error("Error al cargar canciones para la playlist:", error);
-      setPlaylistSongs([]); // En caso de error, limpiar canciones
+      setPlaylistSongs([]);
     } finally {
-      setIsLoading(false); // Ocultar estado de carga
+      setIsLoading(false);
     }
   };
 
@@ -50,9 +52,14 @@ const Playlists = ({ onPlaySong }) => {
   };
 
   const handleRemoveSong = (songId) => {
-    setPlaylistSongs((prevSongs) =>
-      prevSongs.filter((song) => song.id !== songId)
-    );
+    const updatedSongs = playlistSongs.filter((song) => song.id !== songId);
+  
+    // Usa viewPlaylist en lugar de playlist
+    if (viewPlaylist) {
+      updatePlaylistSongs(viewPlaylist.id, updatedSongs);
+    }
+  
+    setPlaylistSongs(updatedSongs);
   };
 
   const handleSavePlaylist = (updatedPlaylist) => {
@@ -70,8 +77,9 @@ const Playlists = ({ onPlaySong }) => {
         playlist={viewPlaylist}
         songs={playlistSongs}
         onClose={() => setViewPlaylist(null)}
-        onPlaySong={onPlaySong}
         onRemoveSong={handleRemoveSong}
+        updatePlaylistSongs={updatePlaylistSongs}
+        onTrackSelect={onTrackSelect} // Pasamos onTrackSelect aquí
       />
     );
   }

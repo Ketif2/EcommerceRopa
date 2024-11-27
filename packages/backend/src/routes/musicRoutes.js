@@ -14,5 +14,9 @@ router.get("/trending", getTrendingSongs);
 
 router.get("/relax", getRelaxSongs);
 
+// router.post("/playlists/save", savePlaylists);
+// router.get("/playlists/load/:username", loadPlaylists);
+// router.post("/playlists/delete", deletePlaylist);
+
 export default router;
 

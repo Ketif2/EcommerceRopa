@@ -2,6 +2,12 @@ import axios from 'axios';
 
 const BACKEND_API_URL = 'http://localhost:3000';
 
+const axiosInstance = axios.create({
+    baseURL: 'http://localhost:3000',
+    maxContentLength: Infinity,
+    maxBodyLength: Infinity,
+});
+
 // Recupera lista de canciones populares
 export const fetchTrendingTracksData = async () => {
     try {
@@ -41,7 +47,6 @@ export const fetchSongStream = async (trackId) => {
     if (!trackId) {
       throw new Error('Invalid trackId: no se puede obtener la URL de streaming.');
     }
-  
     try {
       const response = await axios.get(`${BACKEND_API_URL}/api/songs/${trackId}/play`);
       return response.data;
@@ -50,3 +55,42 @@ export const fetchSongStream = async (trackId) => {
       throw error;
     }
   };
+
+
+
+
+export const saveUserPlaylists = async (username, playlists) => {
+    try {
+        const response = await axiosInstance.post(`/api/playlists/save`, { 
+            username, 
+            playlists 
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error saving playlists:', error);
+        throw error;
+    }
+};
+
+export const loadUserPlaylists = async (username) => {
+    try {
+        const response = await axios.get(`${BACKEND_API_URL}/api/playlists/load/${username}`);
+        return response.data.playlists;
+    } catch (error) {
+        console.error('Error loading playlists:', error);
+        return [];
+    }
+};
+
+export const deleteUserPlaylist = async (username, playlistId) => {
+    try {
+        const response = await axios.post(`${BACKEND_API_URL}/api/playlists/delete`, { 
+            username, 
+            playlistId ,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting playlist:', error);
+        throw error;
+    }
+};
