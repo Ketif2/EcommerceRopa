@@ -9,8 +9,9 @@ import bcrypt from "bcrypt";
 import User from "./model/user.js";
 import playlistRoutes from './routes/playlistRoutes.js';
 import { PORT, SECRET_JWT_KEY } from "./config/config.js";
-import musicRoutes from './routes/musicRoutes.js'
+import musicRoutes from './routes/musicRoutes.js';
 import { validateRegister, validateLogin } from "./utils/validations.js";
+import handleChatMessage from "./controllers/chatController.js"; // Importar el controlador de chat
 
 const app = express();
 const server = http.createServer(app);
@@ -27,29 +28,22 @@ app.use(cookieParser());
 
 connectToDatabase();
 
+// Mapa para almacenar datos de usuario asociados a cada socket
 const socketToUser = new Map();
 
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
 
+  // Manejar el evento "setUserData" para asociar datos del usuario con el socket
   socket.on("setUserData", (userData) => {
     socketToUser.set(socket.id, { username: userData.username });
     console.log(`User data set for socket ${socket.id}:`, socketToUser.get(socket.id));
   });
 
-  socket.on("chatMessage", (message) => {
-    const user = socketToUser.get(socket.id);
-    if (user) {
-      const chatMessage = {
-        text: message,
-        username: user.username,
-        timestamp: new Date().toISOString(),
-      };
-      console.log("Broadcasting message:", chatMessage);
-      io.emit("chatMessage", chatMessage);
-    }
-  });
+  // Usar el controlador para manejar mensajes de chat
+  handleChatMessage(io, socket, socketToUser); // Aquí se llama al controlador y se pasa el mapa
 
+  // Manejar la desconexión del socket
   socket.on("disconnect", () => {
     socketToUser.delete(socket.id);
     console.log(`User disconnected: ${socket.id}`);
@@ -163,7 +157,6 @@ app.get("/", (req, res) => {
 
 // Rutas adicionales
 app.use("/api", musicRoutes);
-
 app.use("/mymusic", playlistRoutes);
 
 // --- Iniciar el servidor ---

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
+import DOMPurify from "dompurify"; // Importar DOMPurify
 import { useChat } from "../context/ChatContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -9,18 +10,15 @@ const Community = () => {
   const [message, setMessage] = useState("");
   const { chatHistory, setChatHistory } = useChat();
   const { user } = useAuth();
-  const [userId, setUserId] = useState(null); // Inicializar el estado del userId
 
   useEffect(() => {
     if (user) {
-      // Enviar el username al servidor
       socket.emit("setUserData", { username: user.username });
-  
-      // Escuchar mensajes de chat
+
       socket.on("chatMessage", (msg) => {
         setChatHistory((prev) => [...prev, msg]);
       });
-  
+
       return () => {
         socket.off("chatMessage");
       };
@@ -29,7 +27,7 @@ const Community = () => {
 
   const sendMessage = () => {
     if (message.trim()) {
-      socket.emit("chatMessage", message); // Envía el mensaje al servidor WebSocket
+      socket.emit("chatMessage", message);
       setMessage("");
     }
   };
@@ -50,24 +48,28 @@ const Community = () => {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 flex flex-col space-y-2">
-  {chatHistory.length > 0 ? (
-    chatHistory.map((msg, index) => (
-      <div
-        key={index}
-        className={`p-2 rounded-lg shadow max-w-xs ${
-          msg.username === user.username // Comparar con el username
-            ? "bg-[#C41E5C] self-end" // Mensajes enviados (alineados a la derecha)
-            : "bg-[#233446] self-start" // Mensajes recibidos (alineados a la izquierda)
-        } text-[#E0E1D1]`}
-      >
-        <div className="text-sm opacity-75 mb-1">{msg.username}</div>
-        {msg.text}
+        {chatHistory.length > 0 ? (
+          chatHistory.map((msg, index) => (
+            <div
+              key={index}
+              className={`p-2 rounded-lg shadow max-w-xs ${
+                msg.username === user.username
+                  ? "bg-[#C41E5C] self-end"
+                  : "bg-[#233446] self-start"
+              } text-[#E0E1D1]`}
+            >
+              <div className="text-sm opacity-75 mb-1">{msg.username}</div>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(msg.text),
+                }}
+              ></div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-gray-400">No messages yet...</div>
+        )}
       </div>
-    ))
-  ) : (
-    <div className="text-center text-gray-400">No messages yet...</div>
-  )}
-</div>
 
       <div className="p-4 bg-[#141D26] shadow flex">
         <input
