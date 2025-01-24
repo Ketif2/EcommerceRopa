@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import MainContent from '../components/MainContent';
-import Community from '../components/Community';
 import AudioPlayer from '../components/AudioPlayer';
-import MusicList from '../components/MusicList';
+import MainContent from "../components/MainContent";
 import { fetchSongStream, fetchTrackDetails } from '../services/data';
 
 function MusicPlayer() {
@@ -88,15 +86,6 @@ function MusicPlayer() {
     }
   };
 
-  const renderMainContent = () => {
-    if (selectedSection === 'Comunidad') {
-      return <Community />;
-    } else if (selectedSection === 'MusicList') {
-      return <MusicList onTrackSelect={(trackId, allTracks, index) => handleTrackSelect(trackId, allTracks, index)} />;
-    }
-    return <MainContent section={selectedSection} />;
-  };
-
   return (
     <div className="flex flex-col bg-primary scrollbar-thin">
       <div className="px-4 py-2">
@@ -119,10 +108,8 @@ function MusicPlayer() {
         </div>
 
         <div className="flex-1 bg-secondary">
-          <div className="h-auto p-4">
-            {renderMainContent()}
-          </div>
-      </div>
+          <MainContent section={selectedSection} onTrackSelect={handleTrackSelect} />
+        </div>
       </div>
     </div>
   );

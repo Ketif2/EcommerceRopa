@@ -1,19 +1,20 @@
-import React from 'react'
-import MusicList from './MusicList';
-import Favorites from './Favorites';
-import Playlists from './PlayList';
-import Community from './Community';
+import React from "react";
+import MusicList from "./MusicList";
+import Favorites from "./Favorites";
+import Playlists from "./PlayList";
+import Community from "./Community";
+import Subscription from "./Subscription";
 
+const MainContent = ({ section, onTrackSelect }) => {
+  const components = {
+    MusicList: <MusicList onTrackSelect={onTrackSelect} />,
+    Favoritas: <Favorites />,
+    Playlists: <Playlists />,
+    Comunidad: <Community />,
+    Suscripciones: <Subscription />,
+  };
 
-const MainContent = ({ section }) => {
-    return (
-      <div>
-      {section === 'MusicList' && <MusicList />}
-      {section === 'Favoritas' && <Favorites />}
-      {section === 'Playlists' && <Playlists />}
-      {section === 'Comunidad' && <Community />}
-    </div>
-    )
-}
+  return components[section] || <div>Sección no encontrada</div>;
+};
 
-export default MainContent
+export default MainContent;

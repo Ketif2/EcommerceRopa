@@ -32,28 +32,29 @@ const MusicList = ({ onTrackSelect }) => {
   }, []);
 
   const handleTrackClick = (trackId, allTracks, index) => {
-    onTrackSelect(trackId, allTracks, index);
+    if (onTrackSelect) {
+      onTrackSelect(trackId, allTracks, index);
+    }
   };
-  
 
   return (
     <div className="flex-1 overflow-auto h-screen scrollbar-thin bg-secondary">
       <div>
         <h2 className="text-white text-xl mb-4">Descubre lo nuevo</h2>
         <div className="grid grid-cols-4 gap-4">
-        {relaxingTracks.length > 0 ? (
+          {relaxingTracks.length > 0 ? (
             relaxingTracks.map((track, index) => (
               <div
-              key={track.id}
-              className="cursor-pointer"
-              onClick={() => handleTrackClick(track.id, relaxingTracks, index)}
-            >
-              <img
-                src={track.artwork["480x480"]}
-                alt={track.description || "Cover image"}
-                className="object-cover rounded-lg border-contrast border-opacity-80 border-r-2 border-b-2"
-              />
-            </div>
+                key={track.id}
+                className="cursor-pointer"
+                onClick={() => handleTrackClick(track.id, relaxingTracks, index)}
+              >
+                <img
+                  src={track.artwork["480x480"]}
+                  alt={track.description || "Cover image"}
+                  className="object-cover rounded-lg border-contrast border-opacity-80 border-r-2 border-b-2"
+                />
+              </div>
             ))
           ) : (
             <p className="text-white">Cargando...</p>
@@ -66,12 +67,12 @@ const MusicList = ({ onTrackSelect }) => {
           {trendingTracks.length > 0 ? (
             trendingTracks.map((track, index) => (
               <Song
-              key={track.id}
-              artwork={track.artwork["480x480"]}
-              title={track.title}
-              genre={track.genre}
-              author={track.user.name}
-              onClick={() => handleTrackClick(track.id, trendingTracks, index)}
+                key={track.id}
+                artwork={track.artwork["480x480"]}
+                title={track.title}
+                genre={track.genre}
+                author={track.user.name}
+                onClick={() => handleTrackClick(track.id, trendingTracks, index)}
               />
             ))
           ) : (

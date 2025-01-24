@@ -11,6 +11,26 @@ const playlistSchema = new mongoose.Schema({
   },
 });
 
+const subscriptionSchema = new mongoose.Schema({
+  planId: {
+    type: String, // ID del plan en PayPal
+    required: true,
+  },
+  startDate: {
+    type: Date,
+    required: true,
+  },
+  endDate: {
+    type: Date,
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["ACTIVE", "CANCELLED"],
+    default: "ACTIVE",
+  },
+});
+
 const userSchema = new mongoose.Schema({
   user: {
     type: String,
@@ -26,7 +46,11 @@ const userSchema = new mongoose.Schema({
     default: null,
   },
   playlists: {
-    type: [playlistSchema], // Relación con el esquema de playlists
+    type: [playlistSchema],
+    default: [],
+  },
+  subscriptions: {
+    type: [subscriptionSchema], // Relación con el esquema de suscripciones
     default: [],
   },
 });

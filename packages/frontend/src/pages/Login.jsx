@@ -14,12 +14,22 @@ const Login = () => {
     e.preventDefault();
 
     try {
+      // Llama a la función de login desde la API
       const { accessToken, refreshToken, user } = await loginUser(username, password);
+
+      // Almacena los tokens en localStorage
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      // Actualiza el estado de autenticación en el contexto
       await login(accessToken, refreshToken, user);
+
+      // Navega al inicio después de un breve retraso
       setTimeout(() => {
         navigate("/");
       }, 1000);
     } catch (err) {
+      // Muestra errores en caso de fallo
       setError(err.message);
     }
   };
